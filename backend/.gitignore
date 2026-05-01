@@ -1,0 +1,7 @@
+# Environment
+.env
+*.env
+
+# Go
+backend/vendor/
+backend/tmp/
