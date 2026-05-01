@@ -1,5 +1,9 @@
 package response
 
 type AuthResponse struct {
-	BaseResponse
+	Token string `json:"token"`
+}
+
+func NewAuthResponse(token string) AuthResponse {
+	return AuthResponse{Token: token}
 }

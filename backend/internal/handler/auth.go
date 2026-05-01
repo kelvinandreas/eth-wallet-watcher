@@ -54,5 +54,5 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusUnauthorized, err.Error())
 	}
 
-	return response.Success(c, fiber.StatusOK, constant.MsgLoginSuccessful, map[string]string{"token": token})
+	return response.Success(c, fiber.StatusOK, constant.MsgLoginSuccessful, response.NewAuthResponse(token))
 }
