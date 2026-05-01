@@ -18,3 +18,11 @@ func InitDB() error {
 	DB = db
 	return DB.AutoMigrate(&app.User{}, &app.MonitoredWallet{}, &app.Notification{}, &app.Transaction{})
 }
+
+func CloseDB() {
+	sqlDB, err := DB.DB()
+	if err != nil {
+		return
+	}
+	sqlDB.Close()
+}

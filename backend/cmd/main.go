@@ -23,6 +23,12 @@ func main() {
 	if err := infrastructure.InitDB(); err != nil {
 		log.Fatal("DB error:", err)
 	}
+	defer infrastructure.CloseDB()
+
+	if err := infrastructure.InitRedis(); err != nil {
+		log.Fatal("Redis error:", err)
+	}
+	defer infrastructure.CloseRedis()
 
 	// Wire dependencies
 	userRepo := repository.NewUserRepository(infrastructure.DB)
