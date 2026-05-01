@@ -1,6 +1,8 @@
-package model
+package app
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+)
 
 type Notification struct {
 	BaseModel
