@@ -5,6 +5,12 @@ import "github.com/google/uuid"
 var SystemUserID = uuid.Nil
 
 const (
+	// JWT errors
+	ErrMissingAuthorizationHeader = "Missing authorization header"
+	ErrInvalidAuthorizationFormat = "Invalid authorization format"
+	ErrInvalidOrExpiredToken      = "Invalid or expired token"
+	ErrInvalidTokenClaims         = "Invalid token claims"
+
 	// Auth errors
 	ErrEmailAlreadyExists       = "Email already exists"
 	ErrFailedHashPassword       = "Failed to hash password"
@@ -13,13 +19,18 @@ const (
 	ErrInvalidRequestBody       = "Invalid request body"
 	ErrEmailAndPasswordRequired = "Email and password are required"
 
-	// JWT errors
-	ErrMissingAuthorizationHeader = "Missing authorization header"
-	ErrInvalidAuthorizationFormat = "Invalid authorization format"
-	ErrInvalidOrExpiredToken      = "Invalid or expired token"
-	ErrInvalidTokenClaims         = "Invalid token claims"
-
 	// Auth messages
 	MsgRegistrationSuccessful = "Registration successful"
 	MsgLoginSuccessful        = "Login successful"
+
+	// Wallet errors
+	ErrWalletAddressRequired = "Wallet address is required"
+	ErrInvalidUserID         = "Invalid user ID"
+	ErrInvalidWalletID       = "Invalid wallet ID"
+	ErrWalletNotFound        = "Wallet not found"
+
+	// Wallet messages
+	MsgWalletCreated   = "Wallet created successfully"
+	MsgWalletRetrieved = "Wallets retrieved successfully"
+	MsgWalletDeleted   = "Wallet deleted successfully"
 )

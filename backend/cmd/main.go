@@ -8,6 +8,7 @@ import (
 	"github.com/kelvinandreas/eth-wallet-watcher/backend/internal/config"
 	"github.com/kelvinandreas/eth-wallet-watcher/backend/internal/handler"
 	"github.com/kelvinandreas/eth-wallet-watcher/backend/internal/infrastructure"
+	"github.com/kelvinandreas/eth-wallet-watcher/backend/internal/middleware"
 	"github.com/kelvinandreas/eth-wallet-watcher/backend/internal/repository"
 	"github.com/kelvinandreas/eth-wallet-watcher/backend/internal/service"
 )
@@ -25,8 +26,13 @@ func main() {
 
 	// Wire dependencies
 	userRepo := repository.NewUserRepository(infrastructure.DB)
+	walletRepo := repository.NewWalletRepository(infrastructure.DB)
+
 	authService := service.NewAuthService(userRepo)
+	walletService := service.NewWalletService(walletRepo)
+
 	authHandler := handler.NewAuthHandler(authService)
+	walletHandler := handler.NewWalletHandler(walletService)
 
 	app := fiber.New()
 
@@ -34,6 +40,12 @@ func main() {
 	auth := app.Group("/auth")
 	auth.Post("/register", authHandler.Register)
 	auth.Post("/login", authHandler.Login)
+
+	// Wallet routes (protected)
+	wallet := app.Group("/wallets", middleware.JWTProtected())
+	wallet.Post("", walletHandler.AddWallet)
+	wallet.Get("", walletHandler.GetWallets)
+	wallet.Delete(":walletID", walletHandler.DeleteWallet)
 
 	log.Fatal(app.Listen(":8080"))
 }
