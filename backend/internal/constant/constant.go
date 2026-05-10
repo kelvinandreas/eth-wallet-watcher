@@ -33,4 +33,15 @@ const (
 	MsgWalletCreated   = "Wallet created successfully"
 	MsgWalletRetrieved = "Wallets retrieved successfully"
 	MsgWalletDeleted   = "Wallet deleted successfully"
+
+	// Transaction messages
+	MsgTransactionsRetrieved = "Transactions retrieved successfully"
+
+	// Notification errors
+	ErrInvalidNotificationID = "Invalid notification ID"
+	ErrNotificationNotFound  = "Notification not found"
+
+	// Notification messages
+	MsgNotificationsRetrieved = "Notifications retrieved successfully"
+	MsgNotificationRead       = "Notification marked as read"
 )

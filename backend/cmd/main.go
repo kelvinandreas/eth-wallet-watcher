@@ -33,12 +33,18 @@ func main() {
 	// Wire dependencies
 	userRepo := repository.NewUserRepository(infrastructure.DB)
 	walletRepo := repository.NewWalletRepository(infrastructure.DB)
+	txRepo := repository.NewTransactionRepository(infrastructure.DB)
+	notifRepo := repository.NewNotificationRepository(infrastructure.DB)
 
 	authService := service.NewAuthService(userRepo)
 	walletService := service.NewWalletService(walletRepo)
+	txService := service.NewTransactionService(txRepo)
+	notifService := service.NewNotificationService(notifRepo)
 
 	authHandler := handler.NewAuthHandler(authService)
 	walletHandler := handler.NewWalletHandler(walletService)
+	txHandler := handler.NewTransactionHandler(txService)
+	notifHandler := handler.NewNotificationHandler(notifService)
 
 	app := fiber.New()
 
@@ -52,6 +58,12 @@ func main() {
 	wallet.Post("", walletHandler.AddWallet)
 	wallet.Get("", walletHandler.GetWallets)
 	wallet.Delete(":walletID", walletHandler.DeleteWallet)
+	wallet.Get(":walletID/transactions", txHandler.GetByWallet)
+
+	// Notification routes (protected)
+	notif := app.Group("/notifications", middleware.JWTProtected())
+	notif.Get("", notifHandler.GetNotifications)
+	notif.Patch(":notifID/read", notifHandler.MarkAsRead)
 
 	log.Fatal(app.Listen(":8080"))
 }
