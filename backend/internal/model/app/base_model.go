@@ -8,11 +8,9 @@ import (
 )
 
 type BaseModel struct {
-	ID     uuid.UUID  `gorm:"type:uuid;primaryKey"`
-	DateIn time.Time  `gorm:"column:created_at;autoCreateTime"`
-	DateUp time.Time  `gorm:"column:updated_at;autoUpdateTime"`
-	UserIn *uuid.UUID `gorm:"type:uuid"`
-	UserUp *uuid.UUID `gorm:"type:uuid"`
+	ID     uuid.UUID `gorm:"type:uuid;primaryKey"`
+	DateIn time.Time `gorm:"column:created_at;autoCreateTime"`
+	DateUp time.Time `gorm:"column:updated_at;autoUpdateTime"`
 }
 
 func (m *BaseModel) BeforeCreate(tx *gorm.DB) error {
