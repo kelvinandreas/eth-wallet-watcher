@@ -33,6 +33,9 @@ func (h *WalletHandler) AddWallet(c *fiber.Ctx) error {
 	if req.Address == "" {
 		return response.Error(c, fiber.StatusBadRequest, constant.ErrWalletAddressRequired)
 	}
+	if !helper.IsValidEthAddress(req.Address) {
+		return response.Error(c, fiber.StatusBadRequest, constant.ErrInvalidEthAddress)
+	}
 
 	parsedUserID, err := helper.GetUserIDFromLocals(c)
 	if err != nil {
@@ -40,6 +43,9 @@ func (h *WalletHandler) AddWallet(c *fiber.Ctx) error {
 	}
 
 	if err := h.walletService.CreateWallet(parsedUserID, req.Address, req.Label); err != nil {
+		if errors.Is(err, service.ErrWalletAlreadyExists) {
+			return response.Error(c, fiber.StatusConflict, constant.ErrWalletAlreadyExists)
+		}
 		return response.Error(c, fiber.StatusBadRequest, err.Error())
 	}
 

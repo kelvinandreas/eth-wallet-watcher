@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/kelvinandreas/eth-wallet-watcher/backend/internal/constant"
+	"github.com/kelvinandreas/eth-wallet-watcher/backend/internal/helper"
 	"github.com/kelvinandreas/eth-wallet-watcher/backend/internal/model/response"
 	"github.com/kelvinandreas/eth-wallet-watcher/backend/internal/service"
 )
@@ -24,15 +25,17 @@ func (h *TransactionHandler) GetByWallet(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusBadRequest, constant.ErrInvalidWalletID)
 	}
 
-	txs, err := h.txService.GetByWalletID(walletID)
+	page, limit := helper.GetPaginationParams(c)
+
+	txs, total, err := h.txService.GetByWalletID(walletID, page, limit)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	result := make([]response.TransactionResponse, 0, len(txs))
+	items := make([]response.TransactionResponse, 0, len(txs))
 	for _, tx := range txs {
-		result = append(result, response.NewTransactionResponse(tx))
+		items = append(items, response.NewTransactionResponse(tx))
 	}
 
-	return response.Success(c, fiber.StatusOK, constant.MsgTransactionsRetrieved, result)
+	return response.Success(c, fiber.StatusOK, constant.MsgTransactionsRetrieved, response.NewPaginatedResponse(items, total, page, limit))
 }

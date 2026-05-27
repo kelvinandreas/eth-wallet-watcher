@@ -1,10 +1,14 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/google/uuid"
 	"github.com/kelvinandreas/eth-wallet-watcher/backend/internal/model/app"
 	"github.com/kelvinandreas/eth-wallet-watcher/backend/internal/repository"
 )
+
+var ErrWalletAlreadyExists = errors.New("wallet address already added")
 
 type WalletService struct {
 	walletRepo *repository.WalletRepository
@@ -15,6 +19,14 @@ func NewWalletService(walletRepo *repository.WalletRepository) *WalletService {
 }
 
 func (s *WalletService) CreateWallet(userID uuid.UUID, address, label string) error {
+	exists, err := s.walletRepo.ExistsByUserAndAddress(userID, address)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return ErrWalletAlreadyExists
+	}
+
 	wallet := &app.MonitoredWallet{
 		UserID:  userID,
 		Address: address,

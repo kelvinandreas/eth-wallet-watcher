@@ -14,6 +14,14 @@ func NewWalletRepository(db *gorm.DB) *WalletRepository {
 	return &WalletRepository{db: db}
 }
 
+func (r *WalletRepository) ExistsByUserAndAddress(userID uuid.UUID, address string) (bool, error) {
+	var count int64
+	err := r.db.Model(&app.MonitoredWallet{}).
+		Where("user_id = ? AND address = ?", userID, address).
+		Count(&count).Error
+	return count > 0, err
+}
+
 func (r *WalletRepository) CreateWallet(wallet *app.MonitoredWallet) error {
 	return r.db.Create(wallet).Error
 }
@@ -48,4 +56,10 @@ func (r *WalletRepository) GetAllWallets() ([]app.MonitoredWallet, error) {
 	}
 
 	return wallets, nil
+}
+
+func (r *WalletRepository) UpdateLastBlock(walletID uuid.UUID, lastBlock string) error {
+	return r.db.Model(&app.MonitoredWallet{}).
+		Where("id = ?", walletID).
+		Update("last_block", lastBlock).Error
 }

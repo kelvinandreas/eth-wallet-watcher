@@ -10,16 +10,16 @@ import (
 )
 
 type Config struct {
-	DBHost       string
-	DBUser       string
-	DBPassword   string
-	DBName       string
-	DBPort       string
-	RedisAddr    string
-	EtherscanKey string
-	ResendKey    string
-	JWTSecret    string
-	TokenTTL     time.Duration
+	DBHost           string
+	DBUser           string
+	DBPassword       string
+	DBName           string
+	DBPort           string
+	RedisAddr        string
+	EtherscanKey     string
+	EtherscanBaseURL string
+	JWTSecret        string
+	TokenTTL         time.Duration
 }
 
 type Claims struct {
@@ -37,6 +37,13 @@ func (c *Config) GetDBDSN() string {
 	)
 }
 
+func getEnvOrDefault(key, defaultVal string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return defaultVal
+}
+
 func Init() {
 	hours, err := strconv.Atoi(os.Getenv("TOKEN_TTL"))
 	if err != nil || hours == 0 {
@@ -44,15 +51,15 @@ func Init() {
 	}
 
 	AppConfig = &Config{
-		DBHost:       os.Getenv("DB_HOST"),
-		DBUser:       os.Getenv("DB_USER"),
-		DBPassword:   os.Getenv("DB_PASSWORD"),
-		DBName:       os.Getenv("DB_NAME"),
-		DBPort:       os.Getenv("DB_PORT"),
-		RedisAddr:    os.Getenv("REDIS_ADDR"),
-		EtherscanKey: os.Getenv("ETHERSCAN_API_KEY"),
-		ResendKey:    os.Getenv("RESEND_API_KEY"),
-		JWTSecret:    os.Getenv("JWT_SECRET"),
-		TokenTTL:     time.Duration(hours) * time.Hour,
+		DBHost:           os.Getenv("DB_HOST"),
+		DBUser:           os.Getenv("DB_USER"),
+		DBPassword:       os.Getenv("DB_PASSWORD"),
+		DBName:           os.Getenv("DB_NAME"),
+		DBPort:           os.Getenv("DB_PORT"),
+		RedisAddr:        os.Getenv("REDIS_ADDR"),
+		EtherscanKey:     os.Getenv("ETHERSCAN_API_KEY"),
+		EtherscanBaseURL: os.Getenv("ETHERSCAN_BASE_URL"),
+		JWTSecret:        os.Getenv("JWT_SECRET"),
+		TokenTTL:         time.Duration(hours) * time.Hour,
 	}
 }

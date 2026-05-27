@@ -25,6 +25,8 @@ const (
 
 	// Wallet errors
 	ErrWalletAddressRequired = "Wallet address is required"
+	ErrInvalidEthAddress     = "Invalid Ethereum address format"
+	ErrWalletAlreadyExists   = "Wallet address already added"
 	ErrInvalidUserID         = "Invalid user ID"
 	ErrInvalidWalletID       = "Invalid wallet ID"
 	ErrWalletNotFound        = "Wallet not found"
@@ -45,3 +47,11 @@ const (
 	MsgNotificationsRetrieved = "Notifications retrieved successfully"
 	MsgNotificationRead       = "Notification marked as read"
 )
+
+var CacheKey = struct {
+	Transactions  string
+	Notifications string
+}{
+	Transactions:  "transactions:%s",
+	Notifications: "notifications:%s",
+}

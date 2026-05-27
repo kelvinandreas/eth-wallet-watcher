@@ -14,7 +14,7 @@ var AsynqClient *asynq.Client
 
 func InitRedis() error {
 	client := redis.NewClient(&redis.Options{
-		Addr:         "localhost:6379",
+		Addr:         config.AppConfig.RedisAddr,
 		DB:           0,
 		DialTimeout:  5 * time.Second,
 		ReadTimeout:  3 * time.Second,

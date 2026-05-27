@@ -27,17 +27,19 @@ func (h *NotificationHandler) GetNotifications(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusUnauthorized, err.Error())
 	}
 
-	notifications, err := h.notifService.GetByUserID(userID)
+	page, limit := helper.GetPaginationParams(c)
+
+	notifications, total, err := h.notifService.GetByUserID(userID, page, limit)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	result := make([]response.NotificationResponse, 0, len(notifications))
+	items := make([]response.NotificationResponse, 0, len(notifications))
 	for _, n := range notifications {
-		result = append(result, response.NewNotificationResponse(n))
+		items = append(items, response.NewNotificationResponse(n))
 	}
 
-	return response.Success(c, fiber.StatusOK, constant.MsgNotificationsRetrieved, result)
+	return response.Success(c, fiber.StatusOK, constant.MsgNotificationsRetrieved, response.NewPaginatedResponse(items, total, page, limit))
 }
 
 func (h *NotificationHandler) MarkAsRead(c *fiber.Ctx) error {

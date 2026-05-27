@@ -18,6 +18,14 @@ func (r *NotificationRepository) Create(n *app.Notification) error {
 	return r.db.Create(n).Error
 }
 
+func (r *NotificationRepository) ExistsByTxHash(walletID uuid.UUID, txHash string) (bool, error) {
+	var count int64
+	err := r.db.Model(&app.Notification{}).
+		Where("wallet_id = ? AND tx_hash = ?", walletID, txHash).
+		Count(&count).Error
+	return count > 0, err
+}
+
 func (r *NotificationRepository) GetByUserID(userID uuid.UUID) ([]app.Notification, error) {
 	var notifications []app.Notification
 	result := r.db.Where("user_id = ?", userID).Order("created_at desc").Find(&notifications)
